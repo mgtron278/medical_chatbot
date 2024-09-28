@@ -1,0 +1,8 @@
+django
+psycopg2
+python-dotenv
+openai==0.28
+langchain-community
+langchain
+transformers
+neo4j
