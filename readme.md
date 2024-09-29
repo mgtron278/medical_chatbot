@@ -40,7 +40,7 @@ A Django-based medical chatbot that interacts with patients, handles appointment
    - Follow the on-screen instructions to set up a new Aura database.
 
 3. **Obtain Connection Details**:
-   - After the database is created, you’ll be provided with a connection URI, a username, and a password (a txt file with credentials will be downloaded as soon as you create an instance). Note down these credentials as they will be used in your `.env` file for connecting to the database.
+   - After the database is created, you’ll be provided with a connection URI, a username, and a password (a `.txt` file with credentials will be downloaded as soon as you create an instance). Note down these credentials as they will be used in your `.env` file for connecting to the database.
 
 4. **Update Your `.env` File**:
    - If you choose to use your own Neo4j account, update the `.env` file in the project root directory with the following:
@@ -87,11 +87,12 @@ pip install -r requirements.txt
 ### 5. Load API Keys into `.env` File
 Before running migrations, ensure that all necessary API keys are loaded into the `.env` file.
 
-1. **Create/edit a `.env` File**:
-   - You already have a .env file, edit the keys with the credentials i provide in email. 
+1. **Create/Edit a `.env` File**:
+   
+   - You already have a `.env` file, edit it with the credentials provided via email.
 
 2. **Add API Keys and Database Credentials**:
-   - Open the `.env` file and edit the following entries:
+   - Open the `.env` file and add the following entries:
      ```bash
      # OpenAI API Key
      OPENAI_API_KEY=<your-openai-api-key>
@@ -101,6 +102,8 @@ Before running migrations, ensure that all necessary API keys are loaded into th
      NEO4J_USERNAME=<your-username>
      NEO4J_PASSWORD=<your-password>
 
+     ```
+   - **Note**: Replace `<your-...>` placeholders with your actual credentials. Ensure that the PostgreSQL credentials match those you set during installation.
 
 ### 6. Execute SQL Scripts to Setup Database and Add Patient Data
 
@@ -110,7 +113,7 @@ Before running migrations, ensure that all necessary API keys are loaded into th
      ```bash
      python sqlsetup.py
      ```
-   - Ensure that PostgreSQL is running and accessible. The script will use the credentials provided in the `.env` file.
+   - Ensure that Pgadmin4 is running and "postgresql 16" server is available. The script will use the credentials provided in the `.env` file.
 
 2. **Run Migrations**:
    - Apply Django migrations to set up the database schema.
@@ -137,18 +140,44 @@ python manage.py runserver
 - Start a conversation by selecting a patient and interacting with the chatbot.
 - The chatbot can handle appointment rescheduling requests and provide information based on the stored medical data.
 
-## Additional Information
-- **PostgreSQL Version**: [16.4-1](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
-- **Python Version**: [3.10.9](https://www.python.org/downloads/release/python-3109/)
-- **OpenAI Version**: 0.28
-- **pgAdmin 4**: Use it to manage the PostgreSQL database. While the initial setup and data population are handled via scripts, pgAdmin can be used for further database management and queries.
-- **Neo4j Aura Cloud**: Use the provided login credentials or create your own account as described above.
+## Working Flow
+
+The Medical Chatbot enables seamless patient interactions by integrating Django, LangChain, OpenAI GPT, and Neo4j. Here's a concise overview of its workflow:
+
+1. **Chat Initialization**:
+   - Patient accesses the chat interface .
+
+2. **Loading Patient Data**:
+   - Retrieves patient details from PostgreSQL.
+   - Provides context for the conversation.
+
+3. **Handling User Messages**:
+   - **Intent Recognition**: Determines if the message is a question or appointment request.
+   - **Entity Extraction**: Extracts relevant information using OpenAI GPT.
+   - **Knowledge Graph Interaction**:
+     - Stores extracted entities in Neo4j.
+     - Retrieves information from Neo4j if needed.
+
+4. **Generating Responses**:
+   - Uses LangChain’s `LLMChain` with a prompt template to craft responses.
+   - Maintains conversation history for context.
+
+5. **Conversation Management**:
+   - Saves both user and AI messages in PostgreSQL.
+   - Summarizes interactions and updates the session summary.
+
+
+### Key Components
+
+- **Django Backend**: Manages requests and serves the chat interface.
+- **PostgreSQL**: Stores patient information and conversation logs.
+- **Neo4j**: Handles and retrieves patient-related entities.
+- **LangChain & OpenAI GPT**: Powers the AI-driven interactions.
+- **Session Management**: Maintains conversation summaries.
+
+This streamlined workflow ensures efficient handling of patient interactions, accurate responses, and comprehensive record-keeping to enhance user experience.
 
 ## Troubleshooting
-
-- **PostgreSQL Connection Issues**:
-  - Ensure PostgreSQL is running.
-  - Verify that the credentials in the `.env` file match those set during PostgreSQL installation.
 
 - **Script Execution Errors**:
   - Make sure you are operating within the activated virtual environment.
@@ -161,13 +190,8 @@ python manage.py runserver
   - Verify the Neo4j connection details in the `.env` file.
   - Ensure that the Neo4j database is accessible and not restricted by firewall rules.
 
-## Contributing
-Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
+
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
-
-
-By following these updated instructions, you ensure that all necessary configurations are in place before initializing the database and running migrations, leading to a smoother setup process.
