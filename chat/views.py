@@ -45,7 +45,7 @@ def chat_view(request, patient_id):
         If appointment change is requested, inform patient the information is conveyed to doctor and waiting response.
         Information from previous conversations :{retrieved_info}
         you have access to last message: {history}
-        "DO NOT GREET USER AND DO NOT INTRODUCE YOURSELF AS CHATBOT"
+        Respond to their greetings and "DO NOT GREET USER AND DO NOT INTRODUCE YOURSELF AS CHATBOT again"
         Do not ask any questions. Please respond to the following user message in a clear, compassionate, and professional way.
         User: {user_message}
         """,
