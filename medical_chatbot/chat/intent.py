@@ -1,5 +1,4 @@
 import openai
-import json
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -11,6 +10,7 @@ def recognize_intent_with_gpt(user_message):
     prompt = f"""
     Determine the user's intent from the following message and categorize it into one of the following intents:
     - Medication
+    - Appointment
     - Dosage
     - Frequency
     - Labreports

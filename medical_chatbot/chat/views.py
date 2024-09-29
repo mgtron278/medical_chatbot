@@ -8,13 +8,11 @@ from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
-from langchain.agents import initialize_agent, Tool
-from langchain.tools import tool
 from .extractor import extract_entities_with_gpt
-
 from .graph import store_entities_in_knowledge_graph
 from .graph import retrieve_information_from_knowledge_graph
 from .intent import recognize_nature_with_gpt
+from .summary import summarize_conversation
 
 load_dotenv()
 openai_api_key = os.getenv('OPENAI_API_KEY')
@@ -23,12 +21,6 @@ openai_api_key = os.getenv('OPENAI_API_KEY')
 def home_view(request):
     return HttpResponse("<h1>Welcome to the Medical Chatbot</h1><p><a href='/chat/1/'>Start Chat</a></p>")
 
-def handle_appointment_reschedule(user_message: str) -> str:
-    return "Your request to reschedule has been noted, and I will convey this to your doctor."
-
-tools = [
-    Tool(name="Appointment date change request Tool", func=handle_appointment_reschedule, description="Just Conveys request to doctor, do not change it yourself. Current appoitnment details :")
-]
 memory = ConversationBufferMemory(input_key="user_message", memory_key="history", return_messages=True)
 # chat/views.py
 def chat_view(request, patient_id):
@@ -50,6 +42,7 @@ def chat_view(request, patient_id):
         template="""
         You are a medical assistant chatbot. Never speak in third person. Give brief but precise responses. Here is the patient information:
         {patient_info}
+        If appointment change is requested, inform patient the information is conveyed to doctor and waiting response.
         Information from previous conversations :{retrieved_info}
         you have access to last message: {history}
         "DO NOT GREET USER AND DO NOT INTRODUCE YOURSELF AS CHATBOT"
@@ -58,72 +51,73 @@ def chat_view(request, patient_id):
         """,
     )
     llm = ChatOpenAI(openai_api_key=openai_api_key, model_name="gpt-3.5-turbo", temperature=0.2)
-    agent = initialize_agent(
-        tools=tools, 
-        llm=llm, 
-        agent_type="zero-shot-react-description", 
-        verbose=True
-    )
-  
-    
+        
     conversations = Conversation.objects.filter(patient=patient).order_by('timestamp')
     
-    
-    conversations = Conversation.objects.filter(patient=patient).order_by('-timestamp')[:4]
+    conversations2 = Conversation.objects.filter(patient=patient).order_by('-timestamp')[:4]
 
     # Reverse the order to maintain chronological flow in the prompt
-    last_two_conversations = reversed(conversations)
+    last_two_conversations = reversed(conversations2)
     chat_chain = LLMChain(llm=llm, prompt=prompt_template, memory=memory)
 
     if request.method == 'POST':
         form = MessageForm(request.POST)
+        
+        if 'reset_summary' in request.POST:  # Check if reset button was clicked
+            request.session['current_summary'] = ''  # Clear the summary
+            return redirect('chat', patient_id=patient.id)
         
         if form.is_valid():
             user_message = form.cleaned_data['message']
             
             Conversation.objects.create(patient=patient, message=user_message, message_by_user=True)
 
-            if "reschedule" in user_message.lower() or "appointment" in user_message.lower():
-                
-                ai_response = agent.run(user_message)
+            
+            if  recognize_nature_with_gpt(user_message) == 'question':
+                retrieved_info = retrieve_information_from_knowledge_graph(patient, user_message)
+
             else:
-                if  recognize_nature_with_gpt(user_message) == 'question':
-                    retrieved_info = retrieve_information_from_knowledge_graph(patient, user_message)
-
-                else:
-                    extracted_entities = extract_entities_with_gpt(user_message)
-                   
-                    if extracted_entities:
-                            store_entities_in_knowledge_graph(patient, extracted_entities)
-
-                    
-                if not retrieved_info:
-                    retrieved_info = ''
+                extracted_entities = extract_entities_with_gpt(user_message)
                 
-                formatted_history = []
-                for message in last_two_conversations:
-                    if message.message_by_user:
-                        formatted_history.append(f"user: {message.message}")
-                    else:
-                        formatted_history.append(f"AI: {message.message}")
+                if extracted_entities:
+                        store_entities_in_knowledge_graph(patient, extracted_entities)
 
-                formatted_history_output = "\n".join(formatted_history)
-                print(formatted_history_output)
+                
+            if not retrieved_info:
+                retrieved_info = ''
+            
+            formatted_history = []
+            for message in last_two_conversations:
+                if message.message_by_user:
+                    formatted_history.append(f"user: {message.message}")
+                else:
+                    formatted_history.append(f"AI: {message.message}")
 
-                ai_response = chat_chain.run({
-                    "patient_info": patient_info,
-                    "retrieved_info": str(retrieved_info),
-                    "user_message": user_message,
-                    "history": formatted_history_output if formatted_history_output else "No prior conversation."
-                })
+            formatted_history_output = "\n".join(formatted_history)
+            
+            print("Type of 'formatted_history_output':", type(formatted_history_output))
+
+            ai_response = chat_chain.run({
+                "patient_info": patient_info,
+                "retrieved_info": str(retrieved_info),
+                "user_message": user_message,
+                "history": formatted_history_output if formatted_history_output else "No prior conversation."
+            })
                 
                 
             Conversation.objects.create(patient=patient, message=ai_response, message_by_user=False)
             
+            if 'current_summary' not in request.session:
+                request.session['current_summary'] = ''
+
+            # Include the new interaction to be summarized
+            new_interaction = f"User: {user_message}\nAI: {ai_response}"
             
-
-           
-
+            # Combine previous summary with the new interaction for summarization
+            updated_summary = summarize_conversation(request.session['current_summary'] + "\n" + new_interaction)
+            
+            # Update the session to keep the latest summary
+            request.session['current_summary'] = updated_summary            
             return redirect('chat', patient_id=patient.id)
     else:
         form = MessageForm()
@@ -136,6 +130,6 @@ def chat_view(request, patient_id):
     
     conversations = Conversation.objects.filter(patient=patient).order_by('timestamp')
 
-    return render(request, 'chat/chat.html', {'form': form, 'conversations': conversations, 'patient': patient})
+    return render(request, 'chat/chat.html', {'form': form, 'conversations': conversations, 'patient': patient, 'current_summary': request.session.get('current_summary', '')})
 
 

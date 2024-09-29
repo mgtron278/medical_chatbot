@@ -13,7 +13,7 @@ NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD')
 
 
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD))
-patient = Patient.objects.get(id=1)
+#patient = Patient.objects.get(id=1)
 def store_entities_in_knowledge_graph(patient, entities):
     with driver.session() as session:
         # Create or match the patient node

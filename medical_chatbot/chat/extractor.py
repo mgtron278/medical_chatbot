@@ -10,6 +10,7 @@ def extract_entities_with_gpt(user_message):
     prompt = f"""
     Extract the following entities from the user's message, if availabe:
     - Medication
+    - Appointment
     - Dosage
     - Frequency
     - lab_reports

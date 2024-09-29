@@ -1,6 +1,5 @@
 
 # Medical Chatbot
-
 A Django-based medical chatbot that interacts with patients, handles appointment rescheduling requests, and integrates with a Neo4j knowledge graph for storing and retrieving patient information.
 
 ## Features:
@@ -20,9 +19,33 @@ A Django-based medical chatbot that interacts with patients, handles appointment
 ## Prerequisites:
 - [PostgreSQL 16.4-1](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) installed locally
 - [Python 3.10.9](https://www.python.org/downloads/release/python-3109/) installed
-- Neo4j Aura Cloud account (for knowledge graph storage)
+- Neo4j Aura Cloud account (for knowledge graph storage) or use the provided credentials
 - OpenAI API Key (Version: 0.28)
 - pgAdmin 4 (to manage PostgreSQL database)
+
+## API Keys and Neo4j Cloud Access:
+- **API Keys**: I will share all necessary API keys via email. Please ensure you have received these keys before setting up the project.
+- **Neo4j Cloud**: You can either log in to my Neo4j Aura Cloud account using the credentials provided via email or create your own account by following the steps below.
+
+### How to Create a Neo4j Aura Cloud Account:
+
+1. **Sign Up**: 
+   - Go to [Neo4j Aura Cloud](https://console.neo4j.io/) and sign up for a free account.
+   
+2. **Create a New Database**: 
+   - Once logged in, click on **Create a Free Database**.
+   - Follow the on-screen instructions to set up a new Aura database.
+
+3. **Obtain Connection Details**:
+   - After the database is created, you’ll be provided with a connection URI, a username, and a password. Note down these credentials as they will be used in your `.env` file for connecting to the database.
+
+4. **Update Your `.env` File**:
+   - If you choose to use your own Neo4j account, update the `.env` file in the project root directory with the following:
+     ```bash
+     NEO4J_URI=<your-uri>
+     NEO4J_USERNAME=<your-username>
+     NEO4J_PASSWORD=<your-password>
+     ```
 
 ## Setup Instructions:
 
@@ -82,33 +105,23 @@ To hardcode patient data into the PostgreSQL database using pgAdmin, follow thes
 3. **View and Verify Data:**
    - To verify the inserted records, right-click on the **patient** table and select **View/Edit Data > All Rows** to ensure the data has been entered correctly.
 
-### 5. Setup Neo4j Aura Cloud
-- Create a free Neo4j Aura Cloud instance.
-- Obtain the connection details (URI, Username, Password).
-- Add these details to your `.env` file:
-  ```bash
-  NEO4J_URI=<your-uri>
-  NEO4J_USERNAME=<your-username>
-  NEO4J_PASSWORD=<your-password>
-  ```
-
-### 6. Setup OpenAI API Key
-- Create a `.env` file in the project root directory and add your OpenAI API Key:
+### 5. Setup OpenAI API Key
+- Create a `.env` file in the project root directory and add your OpenAI API Key (provided via email):
   ```bash
   OPENAI_API_KEY=<your-openai-api-key>
   ```
 
-### 7. Run Migrations
+### 6. Run Migrations
 ```bash
 python manage.py migrate
 ```
 
-### 8. Run the Application
+### 7. Run the Application
 ```bash
 python manage.py runserver
 ```
 
-### 9. Access the Application
+### 8. Access the Application
 - Open your web browser and go to `http://127.0.0.1:8000/`.
 
 ## Usage
@@ -119,6 +132,4 @@ python manage.py runserver
 - **Python Version**: [3.10.9](https://www.python.org/downloads/release/python-3109/)
 - **OpenAI Version**: 0.28
 - **pgAdmin 4**: Use it to manage the PostgreSQL database and manually insert data into the `Patient` and `Conversation` tables.
-```
-
-This version is formatted specifically for a GitHub README, with the necessary download links and instructions for setting up the project.
+- **Neo4j Aura Cloud**: Use the provided login credentials or create your own account as described above.
