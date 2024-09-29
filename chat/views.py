@@ -45,7 +45,7 @@ def chat_view(request, patient_id):
         If appointment change is requested, inform patient the information is conveyed to doctor and waiting response.
         Information from previous conversations :{retrieved_info}
         you have access to last message: {history}
-        Respond to their greetings and "DO NOT GREET USER AND DO NOT INTRODUCE YOURSELF AS CHATBOT again"
+        Respond to their greetings and "DO NOT GREET USER AND DO NOT INTRODUCE YOURSELF AS CHATBOT again, do not repeat appointment date."
         Do not ask any questions. Please respond to the following user message in a clear, compassionate, and professional way.
         User: {user_message}
         """,
@@ -72,10 +72,11 @@ def chat_view(request, patient_id):
             
             Conversation.objects.create(patient=patient, message=user_message, message_by_user=True)
 
-            
+            # retreives information from knowledge graph when needed.
             if  recognize_nature_with_gpt(user_message) == 'question':
                 retrieved_info = retrieve_information_from_knowledge_graph(patient, user_message)
 
+            #extracts information, saves them to knowledge graph
             else:
                 extracted_entities = extract_entities_with_gpt(user_message)
                 
@@ -95,8 +96,7 @@ def chat_view(request, patient_id):
 
             formatted_history_output = "\n".join(formatted_history)
             
-            print("Type of 'formatted_history_output':", type(formatted_history_output))
-
+            #geberate ai response by handling information.
             ai_response = chat_chain.run({
                 "patient_info": patient_info,
                 "retrieved_info": str(retrieved_info),

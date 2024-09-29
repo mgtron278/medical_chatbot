@@ -35,7 +35,6 @@ def recognize_intent_with_gpt(user_message):
     return intent
 
 
-#print(recognize_intent_with_gpt(' what did i take for my diet'))
 def recognize_nature_with_gpt(user_message):
     prompt = f"""
     u have to analyze user message and output "question" in word format if its a question. 
