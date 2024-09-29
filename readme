@@ -1,0 +1,124 @@
+
+# Medical Chatbot
+
+A Django-based medical chatbot that interacts with patients, handles appointment rescheduling requests, and integrates with a Neo4j knowledge graph for storing and retrieving patient information.
+
+## Features:
+- **Patient Medical Information**: Retrieves and stores patient medical data.
+- **Entity Extraction**: Utilizes OpenAI GPT for extracting entities related to medication, medical conditions, etc.
+- **Conversation Management**: Maintains conversation history using LangChain.
+- **Knowledge Graph**: Integrates with Neo4j Aura Cloud for storing and retrieving patient-related entities.
+
+## Tech Stack:
+- **Backend**: Django
+- **Database**: PostgreSQL 16.4-1 (Local)
+- **Knowledge Graph**: Neo4j Aura Cloud
+- **AI Integration**: OpenAI GPT (Version: 0.28), LangChain
+- **Memory Handling**: ConversationBufferMemory (LangChain)
+- **Python Version**: 3.10.9
+
+## Prerequisites:
+- [PostgreSQL 16.4-1](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) installed locally
+- [Python 3.10.9](https://www.python.org/downloads/release/python-3109/) installed
+- Neo4j Aura Cloud account (for knowledge graph storage)
+- OpenAI API Key (Version: 0.28)
+- pgAdmin 4 (to manage PostgreSQL database)
+
+## Setup Instructions:
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd project-directory
+```
+
+### 2. Create a Virtual Environment with Python 3.10.9
+To avoid dependency issues and ensure the smooth flow of the project, create a virtual environment with Python 3.10.9:
+
+#### On macOS/Linux:
+```bash
+python3.10 -m venv env
+source env/bin/activate
+```
+
+#### On Windows:
+```bash
+python -m venv env
+.\env\Scripts\activate
+```
+
+After activating the virtual environment, proceed to install the dependencies.
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Setup PostgreSQL and Connect via pgAdmin 4
+To hardcode patient data into the PostgreSQL database using pgAdmin, follow these steps:
+
+1. **Connect to PostgreSQL:**
+   - Open **pgAdmin 4**.
+   - Right-click on **Servers** and choose **Create > Server**.
+   - Under the **General** tab, name your connection (e.g., `LocalPostgres`).
+   - Under the **Connection** tab, enter the following:
+     - **Host**: `localhost`
+     - **Port**: `5432`
+     - **Username**: `postgres` (or your username)
+     - **Password**: The password you set during the PostgreSQL installation.
+     - **Database**: Select the existing database used by the Django project (e.g., `medical_chatbot`).
+
+2. **Add Patient Data:**
+   - Once connected, navigate to your existing database.
+   - Expand the **Schemas > public > Tables** and find the **patient** table.
+   - Right-click on the **patient** table and choose **Query Tool** to manually insert patient data:
+     ```sql
+     INSERT INTO chat_patient (first_name, last_name, date_of_birth, phone_number, email, medical_condition, medication_regimen, last_appointment, next_appointment, doctor_name)
+     VALUES ('John', 'Doe', '1985-05-15', '123-456-7890', 'john.doe@example.com', 'Hypertension', 'Lisinopril 20mg once a day', '2024-09-01 10:00:00', '2024-10-01 10:00:00', 'Dr. Smith');
+     ```
+
+   - Repeat this process to add more patient records as necessary.
+
+3. **View and Verify Data:**
+   - To verify the inserted records, right-click on the **patient** table and select **View/Edit Data > All Rows** to ensure the data has been entered correctly.
+
+### 5. Setup Neo4j Aura Cloud
+- Create a free Neo4j Aura Cloud instance.
+- Obtain the connection details (URI, Username, Password).
+- Add these details to your `.env` file:
+  ```bash
+  NEO4J_URI=<your-uri>
+  NEO4J_USERNAME=<your-username>
+  NEO4J_PASSWORD=<your-password>
+  ```
+
+### 6. Setup OpenAI API Key
+- Create a `.env` file in the project root directory and add your OpenAI API Key:
+  ```bash
+  OPENAI_API_KEY=<your-openai-api-key>
+  ```
+
+### 7. Run Migrations
+```bash
+python manage.py migrate
+```
+
+### 8. Run the Application
+```bash
+python manage.py runserver
+```
+
+### 9. Access the Application
+- Open your web browser and go to `http://127.0.0.1:8000/`.
+
+## Usage
+- You can start a conversation by selecting a patient and interacting with the chatbot.
+
+## Additional Information
+- **PostgreSQL Version**: [16.4-1](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
+- **Python Version**: [3.10.9](https://www.python.org/downloads/release/python-3109/)
+- **OpenAI Version**: 0.28
+- **pgAdmin 4**: Use it to manage the PostgreSQL database and manually insert data into the `Patient` and `Conversation` tables.
+```
+
+This version is formatted specifically for a GitHub README, with the necessary download links and instructions for setting up the project.
