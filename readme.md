@@ -12,7 +12,7 @@ A Django-based medical chatbot that interacts with patients, handles appointment
 - **Backend**: Django
 - **Database**: PostgreSQL 16.4-1 (Local)
 - **Knowledge Graph**: Neo4j Aura Cloud
-- **AI Integration**: OpenAI GPT (Version: 0.28), LangChain
+- **AI Integration**: OpenAI GPT 3.5 turbo (Version: 0.28), LangChain
 - **Memory Handling**: ConversationBufferMemory (LangChain)
 - **Python Version**: 3.10.9
 
