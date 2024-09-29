@@ -40,7 +40,7 @@ A Django-based medical chatbot that interacts with patients, handles appointment
    - Follow the on-screen instructions to set up a new Aura database.
 
 3. **Obtain Connection Details**:
-   - After the database is created, you’ll be provided with a connection URI, a username, and a password. Note down these credentials as they will be used in your `.env` file for connecting to the database.
+   - After the database is created, you’ll be provided with a connection URI, a username, and a password (a txt file with credentials will be downloaded as soon as you create an instance). Note down these credentials as they will be used in your `.env` file for connecting to the database.
 
 4. **Update Your `.env` File**:
    - If you choose to use your own Neo4j account, update the `.env` file in the project root directory with the following:
@@ -87,11 +87,11 @@ pip install -r requirements.txt
 ### 5. Load API Keys into `.env` File
 Before running migrations, ensure that all necessary API keys are loaded into the `.env` file.
 
-1. **Create a `.env` File**:
-   - In the project root directory, create a file named `.env`.
+1. **Create/edit a `.env` File**:
+   - You already have a .env file, edit the keys with the credentials i provide in email. 
 
 2. **Add API Keys and Database Credentials**:
-   - Open the `.env` file and add the following entries:
+   - Open the `.env` file and edit the following entries:
      ```bash
      # OpenAI API Key
      OPENAI_API_KEY=<your-openai-api-key>
