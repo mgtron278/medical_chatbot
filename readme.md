@@ -52,7 +52,7 @@ A Django-based medical chatbot that interacts with patients, handles appointment
 
 ## Setup Instructions
 
-
+  Please refer to project_repo.jpg to cross-check the setup within your local.
 ### 1. Clone the Repository
 ```bash
 git clone <repository-url>
