@@ -1,0 +1,177 @@
+<!-- chat/templates/chat/chat.html -->
+<!-- chat/templates/chat/chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat with AI</title>
+    <!-- Include Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Include CSS for styling -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            height: 100vh;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #e5ddd5;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-end;
+        }
+
+        .message .bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            position: relative;
+            font-size: 16px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.user .bubble {
+            background-color: #dcf8c6;
+            color: #000;
+            border-bottom-right-radius: 0;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.bot .bubble {
+            background-color: #fff;
+            color: #000;
+            border-bottom-left-radius: 0;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+            align-self: center;
+        }
+
+        .chat-input {
+            padding: 15px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Scrollbar Styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+
+        /* Media Queries */
+        @media (max-width: 600px) {
+            .chat-container {
+                border-left: none;
+                border-right: none;
+            }
+
+            .chat-input input[type="text"] {
+                font-size: 14px;
+            }
+
+            .chat-input button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat with AI</h2>
+        </div>
+
+       
+
+        <div class="chat-messages" id="chat-messages">
+            {% for conversation in conversations %}
+                <div class="message {% if conversation.message_by_user %}user{% else %}bot{% endif %}">
+                    <div class="bubble">
+                        {{ conversation.message }}
+                        <div class="timestamp">{{ conversation.timestamp|date:"H:i" }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <form method="POST" class="chat-input">
+            {% csrf_token %}
+            <input type="text" name="message" placeholder="Type your message..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <!-- Scroll to the bottom of the chat messages on page load -->
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    </script>
+</body>
+</html>
