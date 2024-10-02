@@ -4,7 +4,7 @@ A Django-based medical chatbot that interacts with patients, handles appointment
 
 ## Features
 - **Patient Medical Information**: Retrieves and stores patient medical data.
-- **Entity Extraction**: Utilizes OpenAI GPT for extracting entities related to medication, medical conditions, etc.
+- **Entity Extraction**: Utilizes OpenAI GPT/Gemini for extracting entities related to medication, medical conditions, etc.
 - **Conversation Management**: Maintains conversation history using LangChain.
 - **Knowledge Graph**: Integrates with Neo4j Aura Cloud for storing and retrieving patient-related entities.
 
