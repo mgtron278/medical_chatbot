@@ -12,7 +12,7 @@ A Django-based medical chatbot that interacts with patients, handles appointment
 - **Backend**: Django
 - **Database**: PostgreSQL 16.4-1 (Local)
 - **Knowledge Graph**: Neo4j Aura Cloud
-- **AI Integration**: OpenAI GPT 3.5 turbo (Version: 0.28), LangChain
+- **AI Integration**: OpenAI GPT 3.5 turbo (Version: 0.28)/Gemini , LangChain
 - **Memory Handling**: ConversationBufferMemory (LangChain)
 - **Python Version**: 3.10.9
 
@@ -20,7 +20,7 @@ A Django-based medical chatbot that interacts with patients, handles appointment
 - [PostgreSQL 16.4-1](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) installed locally
 - [Python 3.10.9](https://www.python.org/downloads/release/python-3109/) installed
 - Neo4j Aura Cloud account (for knowledge graph storage) or use the provided credentials
-- OpenAI API Key (Version: 0.28)
+- OpenAI API Key (Version: 0.28)/ Gemini (open-source)
 - pgAdmin 4 (to manage PostgreSQL database)
 - SQL scripts provided in the repository:
   - `sqlsetup.py`: Script to create the database, user, and set permissions.
