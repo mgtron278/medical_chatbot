@@ -1,6 +1,6 @@
 # Medical Chatbot
 
-A Django-based medical chatbot that interacts with patients, handles appointment rescheduling requests, and integrates with a Neo4j knowledge graph for storing and retrieving patient information.
+A Django-based medical chatbot that interacts with patients, handles appointment rescheduling requests, and integrates with a Neo4j knowledge graph for storing and retrieving patient information..
 
 ## Features
 - **Patient Medical Information**: Retrieves and stores patient medical data.
